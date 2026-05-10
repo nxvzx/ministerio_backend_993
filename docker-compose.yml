@@ -1,0 +1,27 @@
+services:
+  # CONTENEDOR 1: La Base de Datos (PostgreSQL)
+  db:
+    image: postgres:15
+    container_name: postgresql_labp
+    restart: always
+    ports:
+      - "4444:5432"  # Externo 4444 : Interno 5432
+    environment:
+      POSTGRES_DB: gobierno_labp
+      POSTGRES_USER: aaee_gobierno
+      POSTGRES_PASSWORD: 1234 # Cambia según tu preferencia
+
+  # CONTENEDOR 2: Tu aplicación Spring Boot
+  app:
+    image: ghcr.io/nxvzx/ministerio_backend_993:latest
+    container_name: springboot_backend
+    restart: always
+    ports:
+      - "8090:8090" # Puerto solicitado
+    depends_on:
+      - db # Asegura que la DB arranque antes
+    environment:
+      # Configuración para que Spring encuentre la base de datos dentro de Docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/gobierno_labp
+      SPRING_DATASOURCE_USERNAME: aaee_gobierno
+      SPRING_DATASOURCE_PASSWORD: 1234
